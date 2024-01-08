@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['actionrequired'] = 'Action required: ';
+$string['attachments'] = 'Attachments';
 $string['cancel'] = 'Changes cancelled, redirecting to course page';
 $string['comments'] = 'Comments:';
 $string['ee:admin'] = "Unlock EE form";
