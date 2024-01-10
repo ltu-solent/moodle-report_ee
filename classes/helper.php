@@ -16,6 +16,8 @@
 
 namespace report_ee;
 
+use stdClass;
+
 /**
  * Class helper
  *

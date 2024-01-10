@@ -41,6 +41,7 @@ $string['externalexaminershortname'] = 'External examiner role shortname';
 $string['externalname'] = 'External examiner: {$a}';
 
 $string['feedbacksummary'] = 'Feedback summary';
+$string['foldername'] = 'Moderation (External Examiners) Private Folder';
 $string['formtitle'] = 'External examiner form for {$a}';
 
 $string['helplevelstatus'] = 'level standards.';
