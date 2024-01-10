@@ -38,6 +38,7 @@ $string['errselect'] = 'You must select either Yes or No.';
 $string['externalname'] = 'External examiner: {$a}';
 $string['externalexaminershortname'] = 'External examiner role shortname';
 $string['feedbacksummary'] = 'Feedback summary';
+$string['foldername'] = 'Moderation (External Examiners) Private Folder';
 $string['formtitle'] = 'External examiner form for {$a}';
 $string['helpsample'] = 'samples of work';
 $string['helpsample_help'] = 'You must select either "Yes" or "No" to be able to submit the form';
