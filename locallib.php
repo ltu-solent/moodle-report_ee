@@ -157,12 +157,49 @@ function report_ee_get_report_data($courseid) {
  * @return stdClass Form data
  */
 function report_ee_set_data($data, $courseid) {
+    global $CFG;
     $assign = 0;
     $username = null;
     $setdata = new stdClass();
+    $coursecontext = context_course::instance($courseid);
+
+    $fs = get_file_storage();
+    if ($files = $fs->get_area_files($coursecontext->id, 'report_ee', 'samples', $courseid)) {
+        $data['samples'] = $courseid;
+    } else {
+        $args = [
+            'contextid' => $coursecontext->id,
+            'component' => 'report_ee',
+            'filearea' => 'samples',
+            'itemid' => $courseid,
+        ];
+        $fs->create_directory(...array_merge($args, ['filepath' => '/All briefs and peer reviews/']));
+        $fs->create_directory(...array_merge($args, ['filepath' => '/Samples and Internal Moderation Records/']));
+        $fs->create_directory(...array_merge($args, ['filepath' => '/Resit samples and Internal Moderation Records/']));
+    }
+
+    $draftitemid = file_get_submitted_draft_itemid('samples');
+    file_prepare_draft_area(
+        // The $draftitemid is the target location.
+        $draftitemid,
+        // The combination of contextid / component / filearea / itemid
+        // form the virtual bucket that files are currently stored in
+        // and will be copied from.
+        $coursecontext->id,
+        'report_ee',
+        'samples',
+        $courseid,
+        [
+            'subdirs' => 1,
+            'maxbytes' => $CFG->maxbytes,
+            'maxfiles' => 50,
+        ]
+    );
+
     // Set this by default.
     if (!$data) {
         $setdata = (object)helper::default_form_data($courseid);
+        $setdata->samples = $draftitemid;
         return $setdata;
     }
     foreach ($data as $key => $val) {
@@ -201,6 +238,7 @@ function report_ee_set_data($data, $courseid) {
                 }
             }
         }
+        $setdata->samples = $draftitemid;
     }
     return $setdata;
 }

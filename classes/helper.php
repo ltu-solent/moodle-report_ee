@@ -16,6 +16,7 @@
 
 namespace report_ee;
 
+use context_course;
 use stdClass;
 
 /**

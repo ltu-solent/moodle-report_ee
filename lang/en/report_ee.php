@@ -70,6 +70,7 @@ $string['reportunlocked'] = 'Report unlocked';
 $string['reportupdated'] = 'Report updated';
 $string['reportviewed'] = 'Report viewed';
 $string['sample'] = 'Have you seen samples of completed work for this assessment?';
+$string['samples'] = 'Samples';
 $string['saved'] = 'Changes saved, redirecting to course page';
 $string['subject'] = 'EE moderation for {$a->shortname} {$a->startdate} - {$a->enddate}';
 $string['submittedby'] = 'Submitted by: {$a}';

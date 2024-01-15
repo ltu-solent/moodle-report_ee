@@ -63,7 +63,6 @@ if (has_capability('report/ee:edit', $coursecontext)) {
     $edit = true;
 }
 
-
 // Trigger a report viewed event.
 $event = \report_ee\event\report_viewed::create([
             'context' => $coursecontext,
@@ -77,6 +76,7 @@ $mform = new externalexaminerform(null, [
     'admin' => $admin,
     'edit' => $edit,
 ]);
+$mform->set_data($setdata);
 
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
@@ -110,7 +110,6 @@ if ($mform->is_cancelled()) {
 echo $OUTPUT->header();
 $PAGE->requires->js_call_amd('report_ee/submit', 'init', [$admin]);
 
-$mform->set_data($setdata);
 $mform->display();
 
 echo $OUTPUT->footer();

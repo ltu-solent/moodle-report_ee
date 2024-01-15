@@ -65,8 +65,8 @@ class migration {
             $filerecord = new stdClass();
             $filerecord->contextid = $newcontext->id;
             $filerecord->component = 'report_ee';
-            $filerecord->filearea = 'ee_folder';
-
+            $filerecord->filearea = 'samples';
+            $filerecord->itemid = $folder->course;
             $fs->create_file_from_storedfile($filerecord, $oldfile);
         }
 
