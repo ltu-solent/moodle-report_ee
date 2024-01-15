@@ -76,6 +76,7 @@ $string['reportunlocked'] = 'Report unlocked';
 $string['reportupdated'] = 'Report updated';
 $string['reportviewed'] = 'Report viewed';
 
+$string['samples'] = 'Samples';
 $string['samplestatus'] = 'Have you seen samples of completed work for this assessment?';
 $string['saved'] = 'Changes saved, redirecting to course page';
 $string['studentregemail'] = 'Student registry email';

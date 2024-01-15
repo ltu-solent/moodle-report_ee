@@ -35,11 +35,12 @@ class externalexaminerform extends moodleform {
      * Defines forms elements
      */
     public function definition() {
-        global $DB;
+        global $CFG, $DB;
         $mform = $this->_form;
         $courseid = $this->_customdata['courseid'];
         $mform->addElement('hidden', 'courseid', $courseid);
         $mform->setType('courseid', PARAM_INT);
+        $forceopen = false;
         // Get the assignments.
         $assignments = report_ee\helper::get_assignments($courseid);
         if (!$assignments) {
@@ -62,7 +63,7 @@ class externalexaminerform extends moodleform {
         foreach ($assignments as $assign) {
             // Add the assignment elements.
             $mform->addElement('header', 'assignment_' . s($assign->idnumber), s($assign->name));
-            $mform->setExpanded('assignment_' . $assign->idnumber);
+            $mform->setExpanded('assignment_' . $assign->idnumber, $forceopen, $forceopen);
             // Samples select.
             $sampleid = 'assign_' . $assign->id . '_samplestatus';
             $mform->addElement(
@@ -103,8 +104,15 @@ class externalexaminerform extends moodleform {
                 $mform->hardFreeze($nationalid);
             }
         }
+
+        $mform->addElement('header', 'sampleheader', new lang_string('samples', 'report_ee'));
+        $mform->setExpanded('sampleheader', true, $forceopen);
+        $options = ['subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 50];
+        $fm = $mform->addElement('filemanager', 'samples', get_string('samples', 'report_ee'), null, $options);
+        $fm->setValue($courseid);
+
         $mform->addElement('header', 'summary', get_string('feedbacksummary', 'report_ee'));
-        $mform->setExpanded('summary', true, true);
+        $mform->setExpanded('summary', true, $forceopen);
         // Comments text area.
         $mform->addElement(
             'textarea',
