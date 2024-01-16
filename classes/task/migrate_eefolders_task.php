@@ -43,10 +43,16 @@ class migrate_eefolders_task extends scheduled_task {
      * @return void
      */
     public function execute() {
-        $folders = migration::get_folders_to_migrate(10);
+        $migrateno = get_config('report_ee', 'migrateno') ?? 10;
+        $folders = migration::get_folders_to_migrate($migrateno);
+        $start = time();
+        $max = $start + 300;
         foreach ($folders as $folder) {
+            // Skip processing more migrations if over 5 mins runtime.
+            if (time() > $max) {
+                continue;
+            }
             mtrace("Migrating {$folder->name} in {$folder->shortname}");
-            // Might put in a max run time like the log deletion.
             migration::move_folder_files_to_reportee($folder);
         }
     }

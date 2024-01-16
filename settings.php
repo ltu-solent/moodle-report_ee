@@ -24,10 +24,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$settings = new admin_settingpage('report_ee', new lang_string('pluginname', 'report_ee'));
-$settings->add(new admin_setting_configtext('report_ee/studentregemail', get_string('studentregemail', 'report_ee'), '', ''));
-$settings->add(new admin_setting_configtext('report_ee/qualityemail', get_string('qualityemail', 'report_ee'), '', ''));
-$settings->add(new admin_setting_configtext('report_ee/moduleleadershortname',
-    get_string('moduleleadershortname', 'report_ee'), '', ''));
-$settings->add(new admin_setting_configtext('report_ee/externalexaminershortname',
-    get_string('externalexaminershortname', 'report_ee'), '', ''));
+if ($hassiteconfig) {
+    $settings = new admin_settingpage('report_ee', new lang_string('pluginname', 'report_ee'));
+    $settings->add(new admin_setting_configtext('report_ee/studentregemail', get_string('studentregemail', 'report_ee'), '', ''));
+    $settings->add(new admin_setting_configtext('report_ee/qualityemail', get_string('qualityemail', 'report_ee'), '', ''));
+    $settings->add(new admin_setting_configtext('report_ee/moduleleadershortname',
+        get_string('moduleleadershortname', 'report_ee'), '', ''));
+    $settings->add(new admin_setting_configtext('report_ee/externalexaminershortname',
+        get_string('externalexaminershortname', 'report_ee'), '', ''));
+    $options = [
+        0 => new lang_string('unlimited'),
+        5 => '5',
+        10 => '10',
+        20 => '20',
+        30 => '30',
+    ];
+    $settings->add(new admin_setting_configselect(
+        'report_ee/migrateno',
+        new lang_string('migrateno', 'report_ee'),
+        new lang_string('migrateno_desc', 'report_ee'),
+        10,
+        $options
+    ));
+}

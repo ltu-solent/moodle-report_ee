@@ -55,6 +55,8 @@ $string['lockedbydata'] = '{$a->username} on {$a->date}';
 $string['lockedwarning'] = 'Are you sure you have finished filling in the form? Ticking this box will lock the form and prevent further editing.';
 
 $string['migrate_eefolders_task'] = 'Migrate EE Folders to EE Report';
+$string['migrateno'] = 'Migrate x folders';
+$string['migrateno_desc'] = 'How many folders to migrate in a single run';
 $string['moduleleadershortname'] = 'Module leader role shortname';
 
 $string['national'] = 'Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?';
