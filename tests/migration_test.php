@@ -120,6 +120,9 @@ class migration_test extends \advanced_testcase {
             // All the capabilities for the Folder should have been deleted.
             $ras = $DB->get_records('role_capabilities', ['contextid' => $foldercontext->id]);
             $this->assertCount(0, $ras);
+            $this->expectOutputString('- 3 files migrated for ' . $module->shortname . PHP_EOL .
+                '- Label for EE Folder replacement created' . PHP_EOL
+            );
         }
     }
 }

@@ -59,7 +59,9 @@ $string['lockedby'] = 'Submitted by';
 $string['lockedbydata'] = '{$a->username} on {$a->date}';
 $string['lockedwarning'] = 'Are you sure you have finished filling in the form? Ticking this box will lock the form and prevent further editing.';
 
+$string['migrate_eefolders_task'] = 'Migrate EE Folders to EE Report';
 $string['moduleleadershortname'] = 'Module leader role shortname';
+
 $string['nationalstatus'] = 'Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?';
 $string['negativeoutcometext'] = 'Please contact your external examiner, your course leader and the Quality team about the negative outcome(s).';
 $string['noassessments'] = 'There are no assessments in this module. If this is incorrect, please email {$a}';

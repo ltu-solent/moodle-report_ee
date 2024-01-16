@@ -16,6 +16,10 @@
 
 namespace report_ee;
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/course/modlib.php');
+
 use context_course;
 use context_module;
 use html_writer;
@@ -34,18 +38,21 @@ class migration {
     /**
      * Get all Folder activities that look like EE folders.
      *
+     * @param int $limit
      * @return array
      */
-    public static function get_folders_to_migrate():array {
+    public static function get_folders_to_migrate($limit = 0): array {
         global $DB;
-        // There are ~27k folders in production, so we may need to chunk this.
+        // There are ~27k folders in production.
+        // Exclude any courses with "_template" in the shortname.
         $folders = $DB->get_records_sql("
-            SELECT f.*, cm.visible, cm.section, cm.id cmid, cs.sequence, cs.section as sectionnum
+            SELECT f.*, c.shortname, cm.visible, cm.section, cm.id cmid, cs.sequence, cs.section as sectionnum
             FROM {folder} f
             JOIN {course_modules} cm ON cm.instance = f.id AND cm.module = (SELECT id FROM {modules} WHERE name = 'folder')
             JOIN {course_sections} cs ON cs.id = cm.section
+            JOIN {course} c ON c.id = f.course AND c.shortname NOT LIKE '%\_template%'
             WHERE f.name LIKE '%External Examiner%'
-        ");
+        ", null, 0, $limit);
         return $folders;
     }
 
@@ -61,7 +68,13 @@ class migration {
         $newcontext = context_course::instance($folder->course);
         $fs = get_file_storage();
         $files = $fs->get_area_files($oldcontext->id, 'mod_folder', 'content', false, 'id', false);
+        $count = 0;
         foreach ($files as $oldfile) {
+            if ($oldfile->is_directory()) {
+                // Don't create the directories, they'll be created if files are created.
+                continue;
+            }
+            $count++;
             $filerecord = new stdClass();
             $filerecord->contextid = $newcontext->id;
             $filerecord->component = 'report_ee';
@@ -70,17 +83,25 @@ class migration {
             $fs->create_file_from_storedfile($filerecord, $oldfile);
         }
 
-        // Is there already a label with a link? This is a bit fuzzy because the label
-        // name is automatically generated from text.
-        $sqllike = $DB->sql_like('name', ':name', false);
-        $labelexists = $DB->record_exists_select('label', $sqllike, [
-            'course' => $folder->course,
-            'name' => '%' . get_string('foldername', 'report_ee') . '%',
-        ]);
-        if (!$labelexists) {
-            // Create new label with link.
-            self::create_eefolder_label($folder);
+        // Only create link if there were any files in the folder.
+        if ($count > 0) {
+            mtrace("- {$count} files migrated for {$folder->shortname}");
+            // Is there already a label with a link? This is a bit fuzzy because the label
+            // name is automatically generated from text.
+            $sqllike = $DB->sql_like('name', ':name', false);
+            $labelexists = $DB->record_exists_select('label', $sqllike, [
+                'course' => $folder->course,
+                'name' => '%' . get_string('foldername', 'report_ee') . '%',
+            ]);
+            if (!$labelexists) {
+                // Create new label with link.
+                self::create_eefolder_label($folder);
+                mtrace("- Label for EE Folder replacement created");
+            }
+        } else {
+            mtrace("- No files to migrate for {$folder->shortname}");
         }
+
         // Delete old folder.
         course_delete_module($folder->cmid);
         // Might need to rebuild cache.
