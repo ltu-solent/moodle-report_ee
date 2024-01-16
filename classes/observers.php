@@ -27,10 +27,17 @@ use stdClass;
  *
  * @package    report_ee
  * @copyright  2024 Solent University {@link https://www.solent.ac.uk}
+ * @author Mark Sharp <mark.sharp@solent.ac.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class observers {
-    public static function submission_graded(\mod_assign\event\submission_graded $event) {
+    /**
+     * When a submission has been grades (after identities revealed if anonymous)
+     *
+     * @param \mod_assign\event\submission_graded $event
+     * @return void
+     */
+    public static function submission_graded(\mod_assign\event\submission_graded $event): void {
         global $DB;
         $cmid = $event->contextinstanceid;
         // We're only doing this for summative assignments.
@@ -39,7 +46,7 @@ class observers {
             return;
         }
 
-        $cm = get_fast_modinfo($event->courseid)->get_cm($event->contextinstanceid);
+        $cm = get_fast_modinfo($event->courseid)->get_cm($cmid);
         $issitsassign = (\local_solsits\helper::is_sits_assignment($cmid));
         $userid = $event->relateduserid;
         $grade = $DB->get_record('assign_grades', ['id' => $event->objectid]);
@@ -62,7 +69,14 @@ class observers {
         // I might want to check if I'm removing the sample.
         // I'm getting this after the event, so I have no way of knowing if this is something that's changed.
         $fs = get_file_storage();
-        $samplefiles = $fs->get_area_files($event->contextid, 'assignsubmission_file', 'submission_files', $submission->id, 'itemid, filepath, filename', false);
+        $samplefiles = $fs->get_area_files(
+            $event->contextid,
+            'assignsubmission_file',
+            'submission_files',
+            $submission->id,
+            'itemid, filepath, filename',
+            false
+        );
         $reportfiles = $fs->get_area_files($coursecontext->id, 'report_ee', 'samples', false, 'itemid, filepath, filename', true);
         $assignpath = '';
         $args = [

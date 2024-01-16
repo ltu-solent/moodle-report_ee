@@ -14,15 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace report_ee;
-
 /**
- * Tests for External examiner feedback
+ * Scheduled task definitions for External examiner feedback
+ *
+ * Documentation: {@link https://moodledev.io/docs/apis/subsystems/task}
  *
  * @package    report_ee
- * @category   test
+ * @category   task
  * @copyright  2024 Solent University {@link https://www.solent.ac.uk}
+ * @author Mark Sharl <mark.sharp@solent.ac.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class observers_test extends \advanced_testcase {
-}
+
+defined('MOODLE_INTERNAL') || die();
+
+$tasks = [
+    [
+        'classname' => '\report_ee\task\migrate_eefolders_task',
+        'blocking' => 0,
+        'minute' => '*/10',
+        'hour' => '1-6',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
+];

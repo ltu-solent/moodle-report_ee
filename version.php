@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2023120800;
+$plugin->version  = 2023120802;
 $plugin->requires  = 2022112800;
 $plugin->component = 'report_ee';
 $plugin->release = '4.1-r1';
