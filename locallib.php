@@ -136,25 +136,23 @@ function report_ee_save_form_data($formdata) {
  * Given courseid, get assignment reports for that course
  *
  * @param int $courseid courseid
- * @return array
+ * @return object
  */
 function report_ee_get_report_data($courseid) {
     global $DB;
-    $username = $DB->sql_concat("COALESCE(u.firstname, '')", "' '", "COALESCE(u.lastname, '')");
-    $sql = "SELECT a.*, r.courseid, r.comments,
-            $username username, r.locked,
-            r.timecreated, r.timemodified
-            FROM {report_ee} r
-            JOIN {report_ee_assign} a ON a.reportid = r.id
-            JOIN {user} u ON u.id = a.userid
-            WHERE r.courseid = :courseid";
-    return $DB->get_records_sql($sql, ['courseid' => $courseid]);
+    $report = $DB->get_record('report_ee', ['course' => $courseid]);
+    if (!$report) {
+        return null;
+    }
+    $assigns = $DB->get_records('report_ee_assign', ['report' => $report->id]);
+    $report->assigns = $assigns;
+    return $report;
 }
 
 /**
  * Get existing data to populate the form
  *
- * @param array $data
+ * @param object $data
  * @param int $courseid
  * @return stdClass Form data
  */
@@ -166,8 +164,8 @@ function report_ee_set_data($data, $courseid) {
     $coursecontext = context_course::instance($courseid);
 
     $fs = get_file_storage();
-    if ($files = $fs->get_area_files($coursecontext->id, 'report_ee', 'samples', $courseid)) {
-        $data['samples'] = $courseid;
+    if ($data && $fs->get_area_files($coursecontext->id, 'report_ee', 'samples', $courseid)) {
+        $data->samples = $courseid;
     } else {
         $args = [
             'contextid' => $coursecontext->id,
@@ -204,44 +202,34 @@ function report_ee_set_data($data, $courseid) {
         $setdata->samples = $draftitemid;
         return $setdata;
     }
-    foreach ($data as $key => $val) {
-        foreach ($val as $k => $v) {
-            // This does assume assign will always be first. Perhaps use array filters or not even loop.
-            if ($k === 'assignid') {
-                $assign = $v;
-            }
-            if ($k == 'samplestatus') {
-                $sample = 'assign_' . $assign . '_samplestatus';
-                $setdata->{$sample} = $v;
-            }
-            if ($k == 'levelstatus') {
-                $level = 'assign_' . $assign . '_levelstatus';
-                $setdata->{$level} = $v;
-            }
-            if ($k == 'nationalstatus') {
-                $national = 'assign_' . $assign . '_nationalstatus';
-                $setdata->{$national} = $v;
-            }
-            if ($k == 'comments') {
-                $setdata->comments = $v;
-            }
-            if ($k == 'username') {
-                $username = $v;
-            }
-            if ($k == 'locked') {
-                if ($v == 0) {
-                    $setdata->locked = $v;
-                } else {
-                    $setdata->locked = 1;
-                    $date = new DateTime();
-                    $date->setTimestamp(intval($v));
-                    $date = userdate($date->getTimestamp());
-                    $setdata->lockedby = get_string('lockedbydata', 'report_ee', ['username' => $username, 'date' => $date]);
-                }
+
+    $setdata->samples = $draftitemid;
+    $setdata->comments = $data->comments;
+
+    $locked = $data->locked ?? 0;
+    $setdata->locked = $locked;
+
+    foreach ($data->assigns as $assign) {
+        $assignid = $assign->assignid;
+        $sample = 'assign_' . $assignid . '_samplestatus';
+        $setdata->{$sample} = $assign->samplestatus;
+
+        $level = 'assign_' . $assignid . '_levelstatus';
+        $setdata->{$level} = $assign->levelstatus;
+
+        $national = 'assign_' . $assignid . '_nationalstatus';
+        $setdata->{$national} = $assign->nationalstatus;
+        if ($locked && !isset($setdata->lockedby)) {
+            $date = new DateTime();
+            $date->setTimestamp(intval($setdata->locked));
+            $date = userdate($date->getTimestamp());
+            if (isset($assign->userid)) {
+                $lockedby = core_user::get_user($assign->userid);
+                $setdata->lockedby = get_string('lockedbydata', 'report_ee', ['username' => fullname($lockedby), 'date' => $date]);
             }
         }
-        $setdata->samples = $draftitemid;
     }
+
     return $setdata;
 }
 

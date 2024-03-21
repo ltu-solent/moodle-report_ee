@@ -89,6 +89,7 @@ Feature: External examiners give feedback
     | grademarkexempt | 1                                    |
     And I am on the "Module1" "Course" page logged in as "ee"
     And I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then I should not see "There are no assessments in the module."
     And I should see "Report 1 (25%)" in the "#region-main" "css_element"
     And I should see "Report 2 (25%)" in the "#region-main" "css_element"
@@ -98,6 +99,7 @@ Feature: External examiners give feedback
     And the "locked" "field" should be enabled
     And I press "Save changes"
     And I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     And I should see "Report 1 (25%)"
     And I should see "Report 2 (25%)"
     And I should see "I have completed this form and wish to submit it"
@@ -107,6 +109,7 @@ Feature: External examiners give feedback
     And I set the field "Report 1 (25%) > Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?" to "Yes"
     And I press "Save changes"
     When I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then the field "Have you seen samples of completed work for this assessment?" in the "Report 1 (25%)" "fieldset" matches value "Yes"
     And the field "Were the standards set for the assessment appropriate for their level?" in the "Report 1 (25%)" "fieldset" matches value "No"
     And the field "Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?" in the "Report 1 (25%)" "fieldset" matches value "Yes"
@@ -126,6 +129,7 @@ Feature: External examiners give feedback
     When I press "Save changes"
     Then I should see "Changes saved, redirecting to course page"
     When I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then I should see "Yes" in the "#id_assignment_ABC101_A_SEM1_202324_ABC10101_001_0 .ee_sample_select" "css_element"
     And I should see "No" in the "#id_assignment_ABC101_A_SEM1_202324_ABC10101_001_0 .ee_level_select" "css_element"
     And I should see "Yes" in the "#id_assignment_ABC101_A_SEM1_202324_ABC10101_001_0 .ee_national_select" "css_element"
@@ -172,6 +176,7 @@ Feature: External examiners give feedback
     | sittingDescription    | SECOND_SITTING             |
     And I am on the "Module1" "Course" page logged in as "ee"
     And I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then I should not see "There are no assessments in the module."
     And I should see "Report 1 (25%)" in the "#region-main" "css_element"
     And I should see "Report 2 (25%)" in the "#region-main" "css_element"
@@ -180,6 +185,7 @@ Feature: External examiners give feedback
     And the "locked" "field" should be enabled
     And I press "Save changes"
     And I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     And I should see "Report 1 (25%)"
     And I should see "Report 2 (25%)"
     And I should see "I have completed this form and wish to submit it"
@@ -189,6 +195,7 @@ Feature: External examiners give feedback
     And I set the field "Report 1 (25%) > Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?" to "Yes"
     And I press "Save changes"
     When I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then the field "Have you seen samples of completed work for this assessment?" in the "Report 1 (25%)" "fieldset" matches value "Yes"
     And the field "Were the standards set for the assessment appropriate for their level?" in the "Report 1 (25%)" "fieldset" matches value "No"
     And the field "Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?" in the "Report 1 (25%)" "fieldset" matches value "Yes"
@@ -208,6 +215,7 @@ Feature: External examiners give feedback
     When I press "Save changes"
     Then I should see "Changes saved, redirecting to course page"
     When I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then I should see "Yes" in the "#id_assignment_2022_Report1_2022 .ee_sample_select" "css_element"
     And I should see "No" in the "#id_assignment_2022_Report1_2022 .ee_level_select" "css_element"
     And I should see "Yes" in the "#id_assignment_2022_Report1_2022 .ee_national_select" "css_element"
