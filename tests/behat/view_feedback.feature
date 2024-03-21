@@ -74,6 +74,7 @@ Feature: Teachers can view, but not edit the feedback
   Scenario: Teacher wishes to view the report
     Given I am on the "Module1" "Course" page logged in as "ml"
     When I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then I should see "Not set" in the "#id_assignment_ABC101_A_SEM1_202324_ABC10101_001_0 .ee_sample_select" "css_element"
     And I should see "Yes" in the "#id_assignment_ABC101_A_SEM1_202324_ABC10101_001_0 .ee_level_select" "css_element"
     And I should see "No" in the "#id_assignment_ABC101_A_SEM1_202324_ABC10101_001_0 .ee_national_select" "css_element"
@@ -88,6 +89,7 @@ Feature: Teachers can view, but not edit the feedback
   Scenario: Registry wishes to view the report
     Given I am on the "Module1" "Course" page logged in as "elreg"
     When I navigate to "Reports > External examiner feedback" in current page administration
+    And I expand all fieldsets
     Then the field "Have you seen samples of completed work for this assessment?" in the "Report 1 (25%)" "fieldset" matches value "Not set"
     And the field "Were the standards set for the assessment appropriate for their level?" in the "Report 1 (25%)" "fieldset" matches value "Yes"
     And the field "Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?" in the "Report 1 (25%)" "fieldset" matches value "No"
