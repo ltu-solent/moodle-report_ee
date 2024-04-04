@@ -32,4 +32,5 @@ $plugin->release = '4.1-r1';
 $plugin->dependencies = [
     'local_solsits' => ANY_VERSION,
     'local_quercus_tasks' => ANY_VERSION,
+    'assignfeedback_sample' => ANY_VERSION,
 ];
