@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 $string['actionrequired'] = 'Action required: ';
 $string['attachments'] = 'Attachments';
 
+$string['briefs'] = 'Briefs, peer reviews and supporting documents';
+$string['briefs_desc'] = 'Documents listed here are also listed in the Assessments tab';
+
 $string['cancel'] = 'Changes cancelled, redirecting to course page';
 $string['comments'] = 'Comments:';
 
