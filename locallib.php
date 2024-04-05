@@ -65,9 +65,10 @@ function report_ee_get_course_fullname($course) {
  * @return void
  */
 function report_ee_save_form_data($formdata) {
-    global $DB, $USER;
+    global $CFG, $DB, $USER;
     $date = new DateTime("now", core_date::get_user_timezone_object());
     $courseid = $formdata->courseid;
+    $coursecontext = context_course::instance($courseid);
     // Check to see if record exists in ee table for course.
     $report = $DB->get_record('report_ee', ['course' => $courseid]);
     if (!$report) {
@@ -129,6 +130,19 @@ function report_ee_save_form_data($formdata) {
     }
     $report->timemodified = $date->getTimestamp();
     $DB->update_record('report_ee', $report, false);
+
+    file_save_draft_area_files(
+        $formdata->samples,
+        $coursecontext->id,
+        'report_ee',
+        'samples',
+        $courseid,
+        [
+            'subdirs' => 1,
+            'maxbytes' => $CFG->maxbytes,
+            'maxfiles' => 500,
+        ]
+    );
 }
 
 /**
@@ -191,7 +205,7 @@ function report_ee_set_data($data, $courseid) {
         [
             'subdirs' => 1,
             'maxbytes' => $CFG->maxbytes,
-            'maxfiles' => 50,
+            'maxfiles' => 500,
         ]
     );
 

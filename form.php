@@ -35,7 +35,7 @@ class externalexaminerform extends moodleform {
      * Defines forms elements
      */
     public function definition() {
-        global $CFG, $DB;
+        global $CFG, $DB, $OUTPUT;
         $mform = $this->_form;
         $courseid = $this->_customdata['courseid'];
         $mform->addElement('hidden', 'courseid', $courseid);
@@ -95,9 +95,33 @@ class externalexaminerform extends moodleform {
             }
         }
 
+        $mform->addElement('header', 'briefsheader', new lang_string('briefs', 'report_ee'));
+        $mform->setExpanded('briefsheader', true);
+        $mform->addElement('static', '', get_string('briefs_desc', 'report_ee'));
+
+        $modinfo = get_fast_modinfo($courseid);
+        // Briefs are going to be uploaded files.
+        $resources = $modinfo->get_instances_of('resource');
+        $briefs = [];
+        foreach ($resources as $resource) {
+            $properties = $resource->getIterator();
+            $sectionnum = $properties['sectionnum'];
+            // Section 1 is assumed to be the assessment section.
+            if ($sectionnum != 1) {
+                continue;
+            }
+            $icon = html_writer::empty_tag('img', array('src' => $resource->get_icon_url()));
+            $visibleicon = $OUTPUT->pix_icon('t/show', get_string('hiddenfromstudents'));
+            if ($properties['visible']) {
+                $visibleicon = $OUTPUT->pix_icon('t/hide', get_string('visibletostudents', '', get_string('students')));
+            }
+            $briefs[] = $icon . ' ' . html_writer::link($resource->get_url(), $resource->get_name()) . ' ' . $visibleicon;
+        }
+        $mform->addElement('static', '', html_writer::alist($briefs));
+
         $mform->addElement('header', 'sampleheader', new lang_string('samples', 'report_ee'));
         $mform->setExpanded('sampleheader', true, $forceopen);
-        $options = ['subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 50];
+        $options = ['subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 500];
         $fm = $mform->addElement('filemanager', 'samples', get_string('samples', 'report_ee'), null, $options);
         $fm->setValue($courseid);
 
@@ -130,7 +154,7 @@ class externalexaminerform extends moodleform {
         }
         if ($locked != 0 && $admin) {
             $this->add_action_buttons();
-        } else if ($locked == 0 && ($admin || $edit)) {
+        } else if ($locked == 0 && $edit) {
             $this->add_action_buttons();
         }
     }
