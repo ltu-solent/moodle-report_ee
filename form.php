@@ -120,7 +120,7 @@ class externalexaminerform extends moodleform {
             if ($sectionnum != 1) {
                 continue;
             }
-            $icon = html_writer::empty_tag('img', array('src' => $resource->get_icon_url()));
+            $icon = html_writer::empty_tag('img', ['src' => $resource->get_icon_url()]);
             $visibleicon = $OUTPUT->pix_icon('t/show', get_string('hiddenfromstudents'));
             if ($properties['visible']) {
                 $visibleicon = $OUTPUT->pix_icon('t/hide', get_string('visibletostudents', '', get_string('students')));
