@@ -25,12 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2023120802;
-$plugin->requires  = 2022112800;
+$plugin->version  = 2024012900;
+$plugin->requires  = 2024100700;
 $plugin->component = 'report_ee';
-$plugin->release = '4.1-r1';
+$plugin->release = '4.5-r1';
 $plugin->dependencies = [
-    'local_solsits' => ANY_VERSION,
+    'local_solsits' => 2024073102,
     'local_quercus_tasks' => ANY_VERSION,
-    'assignfeedback_sample' => ANY_VERSION,
+    'assignfeedback_sample' => 2024102200,
 ];
