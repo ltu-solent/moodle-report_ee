@@ -30,7 +30,7 @@ use mod_folder_generator;
  * @author Mark Sharp <mark.sharp@solent.ac.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class migration_test extends \advanced_testcase {
+final class migration_test extends \advanced_testcase {
     /**
      * Test migration process
      * @covers \report_ee\migration
