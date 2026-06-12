@@ -80,7 +80,7 @@ jobs:
         run: |
           moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-local_solsits
           moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-local_solent
-          moodle-plugin-ci add-plugin --branch master ltu-solent/moodle-local_quercus_tasks
+          moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-local_quercus_tasks
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
