@@ -46,8 +46,8 @@ require_login($course);
 $coursecontext = context_course::instance($courseid);
 $PAGE->set_context($coursecontext);
 require_capability('report/ee:view', $coursecontext);
-$PAGE->set_title($course->shortname .': '. get_string('pluginname' , 'report_ee'));
-$PAGE->set_heading($course->shortname .': '. get_string('pluginname', 'report_ee'));
+$PAGE->set_title($course->shortname . ': ' . get_string('pluginname', 'report_ee'));
+$PAGE->set_heading($course->shortname . ': ' . get_string('pluginname', 'report_ee'));
 
 $data = report_ee_get_report_data($courseid);
 $setdata = report_ee_set_data($data, $courseid);
@@ -103,8 +103,12 @@ if ($mform->is_cancelled()) {
         ]);
         $event->trigger();
     }
-    redirect($CFG->wwwroot.'/course/view.php?id=' . $courseid,
-        get_string('saved', 'report_ee'), null, \core\output\notification::NOTIFY_SUCCESS);
+    redirect(
+        $CFG->wwwroot . '/course/view.php?id=' . $courseid,
+        get_string('saved', 'report_ee'),
+        null,
+        \core\output\notification::NOTIFY_SUCCESS
+    );
 }
 
 echo $OUTPUT->header();

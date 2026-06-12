@@ -34,8 +34,13 @@
 function report_ee_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('report/ee:view', $context)) {
         $url = new moodle_url('/report/ee/index.php', ['courseid' => $course->id]);
-        $navigation->add(get_string('pluginname', 'report_ee'),
+        $navigation->add(
+            get_string('pluginname', 'report_ee'),
             $url,
-            navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
+            navigation_node::TYPE_SETTING,
+            null,
+            null,
+            new pix_icon('i/report', '')
+        );
     }
 }

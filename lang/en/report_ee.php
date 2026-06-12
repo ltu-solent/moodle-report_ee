@@ -26,32 +26,36 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['actionrequired'] = 'Action required: ';
+
 $string['cancel'] = 'Changes cancelled, redirecting to course page';
 $string['comments'] = 'Comments:';
+
 $string['ee:admin'] = "Unlock EE form";
 $string['ee:edit'] = "Edit EE form";
 $string['ee:view'] = "View EE form";
 $string['emailassignmentname'] = 'Assignment - {$a}';
 $string['errcomment'] = 'You must enter a comment.';
 $string['errselect'] = 'You must select either Yes or No.';
-$string['externalname'] = 'External examiner: {$a}';
 $string['externalexaminershortname'] = 'External examiner role shortname';
+$string['externalname'] = 'External examiner: {$a}';
+
 $string['feedbacksummary'] = 'Feedback summary';
 $string['formtitle'] = 'External examiner form for {$a}';
-$string['helpsample'] = 'samples of work';
-$string['helpsample_help'] = 'You must select either "Yes" or "No" to be able to submit the form';
+
 $string['helplevel'] = 'level standards.';
 $string['helplevel_help'] = 'You must select either "Yes" or "No" to be able to submit the form';
 $string['helplock'] = 'Lock for editing';
 $string['helplock_help'] = 'You will no longer be able to make changes to this form';
 $string['helpnational'] = 'national standards';
 $string['helpnational_help'] = 'You must select either "Yes" or "No" to be able to submit the form';
+$string['helpsample'] = 'samples of work';
+$string['helpsample_help'] = 'You must select either "Yes" or "No" to be able to submit the form';
+
 $string['level'] = 'Were the standards set for the assessment appropriate for their level?';
 $string['lock'] = 'I have completed this form and wish to submit it.';
 $string['lockedby'] = 'Submitted by';
 $string['lockedbydata'] = '{$a->username} on {$a->date}';
 $string['lockedwarning'] = 'Are you sure you have finished filling in the form? Ticking this box will lock the form and prevent further editing.';
-
 
 $string['moduleleadershortname'] = 'Module leader role shortname';
 $string['national'] = 'Were the standards of student performance comparable with similar programmes or subjects in other UK institutions with which you are familiar?';
@@ -59,18 +63,21 @@ $string['negativeoutcometext'] = 'Please contact your external examiner, your co
 $string['noassessments'] = 'There are no assessments in this module. If this is incorrect, please email {$a}';
 $string['notset'] = 'Not set';
 
-$string['plugintitle'] = 'External examiner feedback';
 $string['pluginname'] = 'External examiner feedback';
+$string['plugintitle'] = 'External examiner feedback';
+
 $string['qualityemail'] = 'Quality email';
+
 $string['reportlink'] = 'Link to report';
 $string['reportsubmitted'] = 'Report submitted';
 $string['reportunlocked'] = 'Report unlocked';
 $string['reportupdated'] = 'Report updated';
 $string['reportviewed'] = 'Report viewed';
+
 $string['sample'] = 'Have you seen samples of completed work for this assessment?';
 $string['saved'] = 'Changes saved, redirecting to course page';
+$string['studentregemail'] = 'Student registry email';
 $string['subject'] = 'EE moderation for {$a->shortname} {$a->startdate} - {$a->enddate}';
 $string['submittedby'] = 'Submitted by: {$a}';
-$string['studentregemail'] = 'Student registry email';
 
 $string['unknown'] = 'Unknown';
