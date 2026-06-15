@@ -28,7 +28,7 @@ class helper {
     /**
      * Feedback stypes
      */
-    public const FEEDBACK_TYPES = ['level', 'national', 'sample'];
+    public const FEEDBACK_TYPES = ['levelstatus', 'nationalstatus', 'samplestatus'];
 
     /**
      * Returns some default data for all the assignments

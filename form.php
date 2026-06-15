@@ -64,41 +64,41 @@ class externalexaminerform extends moodleform {
             $mform->addElement('header', 'assignment_' . s($assign->idnumber), s($assign->name));
             $mform->setExpanded('assignment_' . $assign->idnumber);
             // Samples select.
-            $sampleid = 'assign_' . $assign->id . '_sample';
+            $sampleid = 'assign_' . $assign->id . '_samplestatus';
             $mform->addElement(
                 'select',
                 $sampleid,
-                get_string('sample', 'report_ee'),
+                get_string('samplestatus', 'report_ee'),
                 $options,
                 'class="ee_sample_select"'
             );
-            $mform->addHelpButton($sampleid, 'helpsample', 'report_ee');
+            $mform->addHelpButton($sampleid, 'helpsamplestatus', 'report_ee');
             if ($locked != 0 || $edit == false) {
                 $mform->hardFreeze($sampleid);
             }
             // Level select.
-            $levelid = 'assign_' . $assign->id . '_level';
+            $levelid = 'assign_' . $assign->id . '_levelstatus';
             $mform->addElement(
                 'select',
                 $levelid,
-                get_string('level', 'report_ee'),
+                get_string('levelstatus', 'report_ee'),
                 $options,
                 'class="ee_level_select"'
             );
-            $mform->addHelpButton($levelid, 'helplevel', 'report_ee');
+            $mform->addHelpButton($levelid, 'helplevelstatus', 'report_ee');
             if ($locked != 0 || $edit == false) {
                 $mform->hardFreeze($levelid);
             }
             // National select.
-            $nationalid = 'assign_' . $assign->id . '_national';
+            $nationalid = 'assign_' . $assign->id . '_nationalstatus';
             $mform->addElement(
                 'select',
                 $nationalid,
-                get_string('national', 'report_ee'),
+                get_string('nationalstatus', 'report_ee'),
                 $options,
                 'class="ee_national_select"'
             );
-            $mform->addHelpButton($nationalid, 'helpnational', 'report_ee');
+            $mform->addHelpButton($nationalid, 'helpnationalstatus', 'report_ee');
             if ($locked != 0 || $edit == false) {
                 $mform->hardFreeze($nationalid);
             }

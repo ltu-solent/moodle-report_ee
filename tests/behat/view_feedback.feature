@@ -64,9 +64,9 @@ Feature: Teachers can view, but not edit the feedback
     And the following "report_ee > eefeedback" exists:
     | course          | Module1                              |
     | activity        | ABC101_A_SEM1_2023/24_ABC10101_001_0 |
-    | sample          | 0                                    |
-    | level           | 1                                    |
-    | national        | 2                                    |
+    | samplestatus    | 0                                    |
+    | levelstatus     | 1                                    |
+    | nationalstatus  | 2                                    |
     | comments        | Really jolly good.                   |
     | locked          | 0                                    |
     | modifiedby      | ee                                   |

@@ -69,10 +69,10 @@ function report_ee_save_form_data($formdata) {
     $date = new DateTime("now", core_date::get_user_timezone_object());
     $courseid = $formdata->courseid;
     // Check to see if record exists in ee table for course.
-    $report = $DB->get_record('report_ee', ['course' => $courseid]);
+    $report = $DB->get_record('report_ee', ['courseid' => $courseid]);
     if (!$report) {
         $record = new stdClass();
-        $record->course = $courseid;
+        $record->courseid = $courseid;
         $record->comments = $formdata->comments;
         // Timestamp when locked; 1 when being locked now; 0 not locked.
         $locked = $formdata->locked ?? 0;
@@ -88,9 +88,9 @@ function report_ee_save_form_data($formdata) {
     // Get the assignid as the first field, so we can match below.
     $assigns = $DB->get_records(
         'report_ee_assign',
-        ['report' => $report->id],
+        ['reportid' => $report->id],
         '',
-        'assign, id, report, user, sample, level, national'
+        'assignid, id, reportid, userid, samplestatus, levelstatus, nationalstatus'
     );
 
     foreach ($formdata as $fieldname => $value) {
@@ -103,9 +103,9 @@ function report_ee_save_form_data($formdata) {
             }
             if (!isset($assigns[$assignid])) {
                 $assigns[$assignid] = new stdClass();
-                $assigns[$assignid]->report = $report->id;
-                $assigns[$assignid]->user = $USER->id;
-                $assigns[$assignid]->assign = $assignid;
+                $assigns[$assignid]->reportid = $report->id;
+                $assigns[$assignid]->userid = $USER->id;
+                $assigns[$assignid]->assignid = $assignid;
             }
             $assigns[$assignid]->{$field} = $value;
         }
@@ -140,13 +140,13 @@ function report_ee_save_form_data($formdata) {
  */
 function report_ee_get_report_data($courseid) {
     global $DB;
-    $sql = "SELECT a.*, r.course, r.comments,
+    $sql = "SELECT a.*, r.courseid, r.comments,
             CONCAT(u.firstname, ' ', u.lastname) username, r.locked,
             r.timecreated, r.timemodified
             FROM {report_ee} r
-            JOIN {report_ee_assign} a ON a.report = r.id
-            JOIN {user} u ON u.id = a.user
-            WHERE r.course = :courseid";
+            JOIN {report_ee_assign} a ON a.reportid = r.id
+            JOIN {user} u ON u.id = a.userid
+            WHERE r.courseid = :courseid";
     return $DB->get_records_sql($sql, ['courseid' => $courseid]);
 }
 
@@ -169,19 +169,19 @@ function report_ee_set_data($data, $courseid) {
     foreach ($data as $key => $val) {
         foreach ($val as $k => $v) {
             // This does assume assign will always be first. Perhaps use array filters or not even loop.
-            if ($k === 'assign') {
+            if ($k === 'assignid') {
                 $assign = $v;
             }
-            if ($k == 'sample') {
-                $sample = 'assign_' . $assign . '_sample';
+            if ($k == 'samplestatus') {
+                $sample = 'assign_' . $assign . '_samplestatus';
                 $setdata->{$sample} = $v;
             }
-            if ($k == 'level') {
-                $level = 'assign_' . $assign . '_level';
+            if ($k == 'levelstatus') {
+                $level = 'assign_' . $assign . '_levelstatus';
                 $setdata->{$level} = $v;
             }
-            if ($k == 'national') {
-                $national = 'assign_' . $assign . '_national';
+            if ($k == 'nationalstatus') {
+                $national = 'assign_' . $assign . '_nationalstatus';
                 $setdata->{$national} = $v;
             }
             if ($k == 'comments') {
@@ -265,14 +265,14 @@ function report_ee_get_external_examiner($courseid) {
  */
 function report_ee_get_label_string($string) {
     switch ($string) {
-        case 'sample':
-            $string = get_string('sample', 'report_ee');
+        case 'samplestatus':
+            $string = get_string('samplestatus', 'report_ee');
             return $string;
-        case 'level':
-            $string = get_string('level', 'report_ee');
+        case 'levelstatus':
+            $string = get_string('levelstatus', 'report_ee');
             return $string;
-        case 'national':
-            $string = get_string('national', 'report_ee');
+        case 'nationalstatus':
+            $string = get_string('nationalstatus', 'report_ee');
             return $string;
         default:
             return "";
