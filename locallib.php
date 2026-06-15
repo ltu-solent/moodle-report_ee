@@ -140,8 +140,9 @@ function report_ee_save_form_data($formdata) {
  */
 function report_ee_get_report_data($courseid) {
     global $DB;
+    $username = $DB->sql_concat("COALESCE(u.firstname, '')", "' '", "COALESCE(u.lastname, '')");
     $sql = "SELECT a.*, r.courseid, r.comments,
-            CONCAT(u.firstname, ' ', u.lastname) username, r.locked,
+            $username username, r.locked,
             r.timecreated, r.timemodified
             FROM {report_ee} r
             JOIN {report_ee_assign} a ON a.reportid = r.id
@@ -213,8 +214,9 @@ function report_ee_set_data($data, $courseid) {
  */
 function report_ee_get_module_leader_emails() {
     global $DB, $COURSE;
+    $emailconcat = $DB->sql_group_concat('u.email', ',');
     $moduleleaders = $DB->get_record_sql(
-        "SELECT GROUP_CONCAT(u.email SEPARATOR ',') emailto
+        "SELECT $emailconcat emailto
          FROM {user} u
          INNER JOIN {role_assignments} ra ON ra.userid = u.id
          INNER JOIN {context} ct ON ct.id = ra.contextid
@@ -240,8 +242,14 @@ function report_ee_get_external_examiner($courseid) {
     if ($shortname == '') {
         return get_string('unknown', 'report_ee');
     }
+    $eenameconcat = $DB->sql_concat(
+        "COALESCE(u.firstname, '')",
+        "' '",
+        "COALESCE(u.lastname, '')"
+    );
+    $eenamesconcat = $DB->sql_group_concat($eenameconcat, ', ');
     $ees = $DB->get_record_sql(
-        "SELECT GROUP_CONCAT(CONCAT(u.firstname, ' ', u.lastname) SEPARATOR ', ') name
+        "SELECT $eenamesconcat name
         FROM {user} u
             INNER JOIN {role_assignments} ra ON ra.userid = u.id
             INNER JOIN {context} ct ON ct.id = ra.contextid
