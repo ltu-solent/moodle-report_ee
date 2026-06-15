@@ -44,9 +44,10 @@ class externalexaminerform extends moodleform {
         // Get the assignments.
         $assignments = report_ee\helper::get_assignments($courseid);
         if (!$assignments) {
-            $mform->addElement('html', '<p>' .
-                get_string('noassessments', 'report_ee',
-                get_config('report_ee', 'studentregemail')) . '</p>');
+            $mform->addElement(
+                'html',
+                '<p>' . get_string('noassessments', 'report_ee', get_config('report_ee', 'studentregemail')) . '</p>'
+            );
             $mform->addElement('cancel');
             return;
         }
@@ -64,32 +65,41 @@ class externalexaminerform extends moodleform {
             $mform->addElement('header', 'assignment_' . s($assign->idnumber), s($assign->name));
             $mform->setExpanded('assignment_' . $assign->idnumber, $forceopen, $forceopen);
             // Samples select.
-            $sampleid = 'assign_' . $assign->id. '_sample';
-            $mform->addElement('select', $sampleid,
-                get_string('sample', 'report_ee'),
+            $sampleid = 'assign_' . $assign->id . '_samplestatus';
+            $mform->addElement(
+                'select',
+                $sampleid,
+                get_string('samplestatus', 'report_ee'),
                 $options,
-                'class="ee_sample_select"');
-            $mform->addHelpButton($sampleid, 'helpsample', 'report_ee');
+                'class="ee_sample_select"'
+            );
+            $mform->addHelpButton($sampleid, 'helpsamplestatus', 'report_ee');
             if ($locked != 0 || $edit == false) {
                 $mform->hardFreeze($sampleid);
             }
             // Level select.
-            $levelid = 'assign_' . $assign->id. '_level';
-            $mform->addElement('select', $levelid,
-                get_string('level', 'report_ee'),
+            $levelid = 'assign_' . $assign->id . '_levelstatus';
+            $mform->addElement(
+                'select',
+                $levelid,
+                get_string('levelstatus', 'report_ee'),
                 $options,
-                'class="ee_level_select"');
-            $mform->addHelpButton($levelid, 'helplevel', 'report_ee');
+                'class="ee_level_select"'
+            );
+            $mform->addHelpButton($levelid, 'helplevelstatus', 'report_ee');
             if ($locked != 0 || $edit == false) {
                 $mform->hardFreeze($levelid);
             }
             // National select.
-            $nationalid = 'assign_' . $assign->id. '_national';
-            $mform->addElement('select', $nationalid,
-                get_string('national', 'report_ee'),
+            $nationalid = 'assign_' . $assign->id . '_nationalstatus';
+            $mform->addElement(
+                'select',
+                $nationalid,
+                get_string('nationalstatus', 'report_ee'),
                 $options,
-                'class="ee_national_select"');
-            $mform->addHelpButton($nationalid, 'helpnational', 'report_ee');
+                'class="ee_national_select"'
+            );
+            $mform->addHelpButton($nationalid, 'helpnationalstatus', 'report_ee');
             if ($locked != 0 || $edit == false) {
                 $mform->hardFreeze($nationalid);
             }
@@ -128,8 +138,12 @@ class externalexaminerform extends moodleform {
         $mform->addElement('header', 'summary', get_string('feedbacksummary', 'report_ee'));
         $mform->setExpanded('summary', true, $forceopen);
         // Comments text area.
-        $mform->addElement('textarea', 'comments',
-            get_string('comments', 'report_ee'), 'wrap="virtual" rows="20" cols="50"');
+        $mform->addElement(
+            'textarea',
+            'comments',
+            get_string('comments', 'report_ee'),
+            'wrap="virtual" rows="20" cols="50"'
+        );
         if ($locked != 0 || $edit == false) {
             $mform->disabledIf('comments', 'locked', 'checked');
             $mform->hardFreeze('comments');

@@ -70,10 +70,10 @@ function report_ee_save_form_data($formdata) {
     $courseid = $formdata->courseid;
     $coursecontext = context_course::instance($courseid);
     // Check to see if record exists in ee table for course.
-    $report = $DB->get_record('report_ee', ['course' => $courseid]);
+    $report = $DB->get_record('report_ee', ['courseid' => $courseid]);
     if (!$report) {
         $record = new stdClass();
-        $record->course = $courseid;
+        $record->courseid = $courseid;
         $record->comments = $formdata->comments;
         // Timestamp when locked; 1 when being locked now; 0 not locked.
         $locked = $formdata->locked ?? 0;
@@ -87,10 +87,11 @@ function report_ee_save_form_data($formdata) {
         $report = $DB->get_record('report_ee', ['id' => $id]);
     }
     // Get the assignid as the first field, so we can match below.
-    $assigns = $DB->get_records('report_ee_assign',
-        ['report' => $report->id],
+    $assigns = $DB->get_records(
+        'report_ee_assign',
+        ['reportid' => $report->id],
         '',
-        'assign, id, report, user, sample, level, national'
+        'assignid, id, reportid, userid, samplestatus, levelstatus, nationalstatus'
     );
 
     foreach ($formdata as $fieldname => $value) {
@@ -103,9 +104,9 @@ function report_ee_save_form_data($formdata) {
             }
             if (!isset($assigns[$assignid])) {
                 $assigns[$assignid] = new stdClass();
-                $assigns[$assignid]->report = $report->id;
-                $assigns[$assignid]->user = $USER->id;
-                $assigns[$assignid]->assign = $assignid;
+                $assigns[$assignid]->reportid = $report->id;
+                $assigns[$assignid]->userid = $USER->id;
+                $assigns[$assignid]->assignid = $assignid;
             }
             $assigns[$assignid]->{$field} = $value;
         }
@@ -223,15 +224,15 @@ function report_ee_set_data($data, $courseid) {
     $setdata->locked = $locked;
 
     foreach ($data->assigns as $assign) {
-        $assignid = $assign->assign;
-        $sample = 'assign_'. $assignid .'_sample';
-        $setdata->{$sample} = $assign->sample;
+        $assignid = $assign->assignid;
+        $sample = 'assign_' . $assignid . '_samplestatus';
+        $setdata->{$sample} = $assign->samplestatus;
 
-        $level = 'assign_'. $assignid .'_level';
-        $setdata->{$level} = $assign->level;
+        $level = 'assign_' . $assignid . '_levelstatus';
+        $setdata->{$level} = $assign->levelstatus;
 
-        $national = 'assign_'. $assignid .'_national';
-        $setdata->{$national} = $assign->national;
+        $national = 'assign_' . $assignid . '_nationalstatus';
+        $setdata->{$national} = $assign->nationalstatus;
         if ($locked && !isset($setdata->lockedby)) {
             $date = new DateTime();
             $date->setTimestamp(intval($setdata->locked));
@@ -253,15 +254,18 @@ function report_ee_set_data($data, $courseid) {
  */
 function report_ee_get_module_leader_emails() {
     global $DB, $COURSE;
-    $moduleleaders = $DB->get_record_sql("SELECT GROUP_CONCAT(u.email SEPARATOR ',') emailto
-                        FROM {user} u
-                        INNER JOIN {role_assignments} ra ON ra.userid = u.id
-                        INNER JOIN {context} ct ON ct.id = ra.contextid
-                        INNER JOIN {course} c ON c.id = ct.instanceid
-                        INNER JOIN {role} r ON r.id = ra.roleid
-                        WHERE r.shortname = ?
-                        AND c.id = ?",
-                        [get_config('report_ee', 'moduleleadershortname'), $COURSE->id]);
+    $emailconcat = $DB->sql_group_concat('u.email', ',');
+    $moduleleaders = $DB->get_record_sql(
+        "SELECT $emailconcat emailto
+         FROM {user} u
+         INNER JOIN {role_assignments} ra ON ra.userid = u.id
+         INNER JOIN {context} ct ON ct.id = ra.contextid
+         INNER JOIN {course} c ON c.id = ct.instanceid
+         INNER JOIN {role} r ON r.id = ra.roleid
+         WHERE r.shortname = ?
+         AND c.id = ?",
+        [get_config('report_ee', 'moduleleadershortname'), $COURSE->id]
+    );
     return $moduleleaders;
 }
 
@@ -278,8 +282,14 @@ function report_ee_get_external_examiner($courseid) {
     if ($shortname == '') {
         return get_string('unknown', 'report_ee');
     }
-    $ees = $DB->get_record_sql("
-        SELECT GROUP_CONCAT(CONCAT(u.firstname, ' ', u.lastname) SEPARATOR ', ') name
+    $eenameconcat = $DB->sql_concat(
+        "COALESCE(u.firstname, '')",
+        "' '",
+        "COALESCE(u.lastname, '')"
+    );
+    $eenamesconcat = $DB->sql_group_concat($eenameconcat, ', ');
+    $ees = $DB->get_record_sql(
+        "SELECT $eenamesconcat name
         FROM {user} u
             INNER JOIN {role_assignments} ra ON ra.userid = u.id
             INNER JOIN {context} ct ON ct.id = ra.contextid
@@ -287,7 +297,8 @@ function report_ee_get_external_examiner($courseid) {
             INNER JOIN {role} r ON r.id = ra.roleid
         WHERE r.shortname = :shortname
             AND c.id = :courseid",
-        ['shortname' => $shortname, 'courseid' => $courseid]);
+        ['shortname' => $shortname, 'courseid' => $courseid]
+    );
     if ($ees) {
         return $ees->name;
     }
@@ -302,14 +313,14 @@ function report_ee_get_external_examiner($courseid) {
  */
 function report_ee_get_label_string($string) {
     switch ($string) {
-        case 'sample':
-            $string = get_string('sample', 'report_ee');
+        case 'samplestatus':
+            $string = get_string('samplestatus', 'report_ee');
             return $string;
-        case 'level':
-            $string = get_string('level', 'report_ee');
+        case 'levelstatus':
+            $string = get_string('levelstatus', 'report_ee');
             return $string;
-        case 'national':
-            $string = get_string('national', 'report_ee');
+        case 'nationalstatus':
+            $string = get_string('nationalstatus', 'report_ee');
             return $string;
         default:
             return "";
@@ -335,7 +346,6 @@ function report_ee_send_emails($formdata) {
         foreach ($moduleleaders as $moduleleader) {
             $to[$moduleleader] = $moduleleader;
         }
-
     }
     if ($reg = get_config('report_ee', 'studentregemail')) {
         $to[$reg] = $reg;
@@ -358,7 +368,8 @@ function report_ee_send_emails($formdata) {
                 $assignment = $DB->get_record('assign', ['id' => $assignid]);
                 $assignmessage .= html_writer::tag(
                     'h4',
-                    get_string('emailassignmentname', 'report_ee', s($assignment->name)));
+                    get_string('emailassignmentname', 'report_ee', s($assignment->name))
+                );
             }
 
             switch ($value) {
@@ -375,7 +386,7 @@ function report_ee_send_emails($formdata) {
                         [
                             'style' => 'color:red;font-weight:bold;',
                         ]
-                        );
+                    );
                     $actionrequired = get_string('actionrequired', 'report_ee');
                     // This is something QA need to know about.
                     if ($qa) {
@@ -413,14 +424,15 @@ function report_ee_send_emails($formdata) {
     $submittedby = fullname($USER);
     $messagebody .= html_writer::tag('p', get_string('submittedby', 'report_ee', $submittedby));
     $messagebody .= $assignmessage;
-    $messagebody .= html_writer::tag('h4', get_string('comments'). ':');
+    $messagebody .= html_writer::tag('h4', get_string('comments') . ':');
     $messagebody .= html_writer::tag(
         'p',
         format_text_email($formdata->comments, FORMAT_HTML)
     );
     $messagebody .= $negativeoutcometext;
     $url = new moodle_url('/report/ee/index.php', ['courseid' => $courseid]);
-    $messagebody .= html_writer::tag('p',
+    $messagebody .= html_writer::tag(
+        'p',
         html_writer::link($url, get_string('reportlink', 'report_ee'))
     );
     mail(join(',', $to), $subject, $messagebody, $headers);

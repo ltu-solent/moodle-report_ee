@@ -32,11 +32,11 @@ class report_ee_generator extends component_generator_base {
     public function create_eefeedback($eefeedback) {
         global $DB, $USER;
         $ee = new stdClass();
-        $ee->course = $eefeedback['courseid'];
+        $ee->courseid = $eefeedback['courseid'];
         $ee->comments = $eefeedback['comments'] ?? '';
         $ee->locked = $eefeedback['locked'] ?? 0;
         $ee->timemodified = time();
-        $eeinstance = $DB->get_record('report_ee', ['course' => $eefeedback['courseid']]);
+        $eeinstance = $DB->get_record('report_ee', ['courseid' => $eefeedback['courseid']]);
         if (!$eeinstance) {
             $ee->timecreated = time();
             $insertid = $DB->insert_record('report_ee', $ee);
@@ -46,16 +46,16 @@ class report_ee_generator extends component_generator_base {
             $DB->update_record('report_ee', $ee);
         }
         $eeassign = new stdClass();
-        $eeassign->report = $ee->id;
+        $eeassign->reportid = $ee->id;
         if (isset($eefeedback['modifiedby'])) {
-            $eeassign->user = core_user::get_user_by_username($eefeedback['modifiedby'])->id;
+            $eeassign->userid = core_user::get_user_by_username($eefeedback['modifiedby'])->id;
         } else {
-            $eeassign->user = $USER->id;
+            $eeassign->userid = $USER->id;
         }
-        $eeassign->assign = $eefeedback['instanceid'];
-        $eeassign->sample = $eefeedback['sample'] ?? 0;
-        $eeassign->level = $eefeedback['level'] ?? 0;
-        $eeassign->national = $eefeedback['national'] ?? 0;
+        $eeassign->assignid = $eefeedback['instanceid'];
+        $eeassign->samplestatus = $eefeedback['samplestatus'] ?? 0;
+        $eeassign->levelstatus = $eefeedback['levelstatus'] ?? 0;
+        $eeassign->nationalstatus = $eefeedback['nationalstatus'] ?? 0;
         $DB->insert_record('report_ee_assign', $eeassign);
     }
 }

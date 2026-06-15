@@ -34,7 +34,6 @@ namespace report_ee\event;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_updated extends \core\event\base {
-
     /**
      * Init method.
      *
