@@ -117,7 +117,8 @@ class migration {
     private static function create_eefolder_label($folder) {
         global $DB;
         $reporteeurl = new moodle_url('/report/ee/index.php', ['courseid' => $folder->course]);
-        $labelcontent = html_writer::tag('p',
+        $labelcontent = html_writer::tag(
+            'p',
             html_writer::link($reporteeurl, get_string('foldername', 'report_ee'))
         );
         $labelcontent .= html_writer::tag('p', 'The Moderation folder has moved to the External Examiner report page. ' .

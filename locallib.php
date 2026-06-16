@@ -154,11 +154,11 @@ function report_ee_save_form_data($formdata) {
  */
 function report_ee_get_report_data($courseid) {
     global $DB;
-    $report = $DB->get_record('report_ee', ['course' => $courseid]);
+    $report = $DB->get_record('report_ee', ['courseid' => $courseid]);
     if (!$report) {
         return null;
     }
-    $assigns = $DB->get_records('report_ee_assign', ['report' => $report->id]);
+    $assigns = $DB->get_records('report_ee_assign', ['reportid' => $report->id]);
     $report->assigns = $assigns;
     return $report;
 }
